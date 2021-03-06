@@ -19,9 +19,11 @@ app.use(function(req, res) {
         var resstr = str.substring(0, n);
         // Load routes for top level if they exist.
         var pkg_path = "./routes/" + resstr;
+        console.log(pkg_path);
         var pkg = require(pkg_path);
         // Chop out endpoint path
         var func_path = str.substring(n + 1);
+        console.log(func_path);
     } catch(e) {
         // They dont exist.
         console.log(e);

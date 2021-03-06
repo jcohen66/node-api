@@ -14,16 +14,15 @@ app.use(function(req, res) {
     try {
         // Strip off leading '/'.
         str = str.substring(1);
-        // Chop out top level url segment
-        var n = str.indexOf("/");
-        var resstr = str.substring(0, n);
+        segments = str.split("/");
         // Load routes for top level if they exist.
-        var pkg_path = "./routes/" + resstr;
-        console.log(pkg_path);
+        var pkg_path = "./routes/" + segments[0];
         var pkg = require(pkg_path);
         // Chop out endpoint path
-        var func_path = str.substring(n + 1);
-        console.log(func_path);
+        var func_path = "root"; 
+        if(segments.length > 1) {
+            func_path = segments[1];
+        }
     } catch(e) {
         // They dont exist.
         console.log(e);

@@ -1,9 +1,22 @@
-var requestHandlers = require("../models/cars");
+var express = require("express");
+var carsRouter = express.Router();
 
-var handle = {};
-handle["root"] = requestHandlers.root;
-handle["ford"] = requestHandlers.ford;
-handle["chevy"] = requestHandlers.chevy;
+var controller = require("../controllers/carsController");
 
+// middleware that is specific to this router
+carsRouter.use(function timeLog(req, res, next) {
+  console.log("Time: ", Date.now());
+  next();
+});
+// define the home page route
+carsRouter.get("/", function (req, res) {
+  res.send("Cars home page");
+});
+// define the about route
+carsRouter.get("/about", function (req, res) {
+  res.send("About cars");
+});
+/** Check service status **/
+carsRouter.get("/inventory", controller.inventory_list);
 
-exports.handle = handle;
+module.exports = carsRouter;

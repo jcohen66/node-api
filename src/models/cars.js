@@ -1,20 +1,40 @@
-function root(req, res) {
-    return res.send(["Ford", "Chevy"]);
-}
+const fs = require("fs");
 
-function ford(req, res) {
-    msg = 'Fords are ok.';
-    console.log(msg);
-    return res.send(msg);``
-}
+var schemas = require("./schemas.js");
+var _ = require("lodash");
+var Car = function (data) {
+  this.data = this.sanitize(data);
+};
 
-function chevy(req, res) {
-    var msg = "Chevy's are awesome!";
-    console.log(msg);
-    return res.send(msg);
-}
+Car.prototype.get = function (name) {
+  return this.data[name];
+};
 
-// enables this function to be callable from outside this file.
-exports.root = root;
-exports.ford = ford;
-exports.chevy = chevy;
+Car.prototype.set = function (name, value) {
+  this.data[name] = value;
+};
+
+Car.findById = function (id, callback) {
+  fs.readFile(__dirname + "/" + "cars.json", "utf8", function (err, data) {
+    console.log(data);
+    if (err) return callback(err);
+    callback(JSON.parse(data));
+  });
+};
+
+Car.prototype.data = {};
+
+Car.prototype.sanitize = function (data) {
+  data = data || {};
+  schema = schemas.car;
+  return _.pick(_.defaults(data, schema), _.keys(schema));
+};
+
+exports.inventory = function (req, res) {
+  fs.readFile(__dirname + "/" + "cars.json", "utf8", function (err, data) {
+    console.log(data);
+    res.end(data);
+  });
+};
+
+module.exports = Car;
